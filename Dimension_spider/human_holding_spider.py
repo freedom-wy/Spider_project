@@ -12,7 +12,7 @@ class HumanHolding(BaseSpider):
         # 继承父类的方法
         super().__init__(*args, **kwargs)
 
-    def detail_one_parse(self, tr, company_name, company_id):
+    async def detail_one_parse(self, tr, company_name, company_id):
         """
         单独解析一个tr
         :param tr:
@@ -71,9 +71,13 @@ class HumanHolding(BaseSpider):
             url = f'https://www.tianyancha.com/company/holder_holding_analysis.xhtml?id={company_id}&_={self.get_now_timestamp()}'
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=self.get_headers) as resp:
+                    response = await resp.text() if await resp.text() else '<div></div>'
                     trs = self.get_xpath('//div[@id="_container_humanholding"]/table/tbody/tr',
-                                         response=await resp.text())
-                    await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id) for tr in trs])
+                                         response=response)
+                    if trs:
+                        await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id) for tr in trs])
+                    else:
+                        print('无数据')
         except Exception as e:
             print(f'类 - - {HumanHolding.__name__} - - 异步请求出错：', e)
 

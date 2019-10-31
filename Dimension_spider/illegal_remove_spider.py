@@ -4,9 +4,9 @@ import asyncio
 from utils.Base_spider import BaseSpider
 
 
-class HolderChange(BaseSpider):
+class IllegalRemove(BaseSpider):
     """
-    股权变更信息（公司公示）
+    严重违法爬虫（移出）
     """
 
     def __init__(self, *args, **kwargs):
@@ -21,31 +21,29 @@ class HolderChange(BaseSpider):
         :param company_id:
         :return:
         """
-        # 股东发起人
-        name = ''.join(self.get_xpath('./td[2]//td[2]//text()', html=tr))
-        # 变更后
-        ratio_after = ''.join(self.get_xpath('./td[4]//text()', html=tr))
-        # 变更前
-        ratio_before = ''.join(self.get_xpath('./td[3]//text()', html=tr))
-        # 变更时间
-        change_time = ''.join(self.get_xpath('./td[5]//text()', html=tr))
-        # logo
-        logo = ''.join(self.get_xpath('./td[2]//td[1]//img/@data-src', html=tr))
+        # 移出时间
+        removeDate = ''.join(self.get_xpath('./td[2]//text()', html=tr))
+        # 移出决定机关
+        removeDepartment = ''.join(self.get_xpath('./td[3]//text()', html=tr))
+        # 列入严重违法原因
+        putReason = ''.join(self.get_xpath('./td[4]//text()', html=tr))
+        # 移出严重违法原因
+        removeReason = ''.join(self.get_xpath('./td[5]//text()', html=tr))
 
         kwargs = {
-            'name': name,
-            'ratio_after': ratio_after,
-            'ratio_before': ratio_before,
-            'change_time': change_time,
-            'logo': logo,
+            'removeDate': removeDate,
+            'removeDepartment': removeDepartment,
+            'putReason': putReason,
+            'removeReason': removeReason,
             'company_name': company_name,
-            'company_id': company_id
+            'company_id': company_id,
+            'illegal_type': '1'
         }
 
-        tup = ('company_name', 'company_id', 'name', 'ratio_after', 'logo', 'ratio_before',
-               'type', 'change_time')
+        tup = ('removeReason', 'removeDepartment', 'putDate', 'putReason', 'putDepartment', 'removeDate',
+               'company_name', 'company_id', 'illegal_type')
         values, keys = self.structure_sql_statement(tup, kwargs)
-        sql = f'insert into das_tm_holder_change_info {keys} value {values};'
+        sql = f'insert into das_tm_illegal_info {keys} value {values};'
         print(sql)
         self.operating.save_mysql(sql)
 
@@ -74,17 +72,17 @@ class HolderChange(BaseSpider):
         #     pass
 
         try:
-            url = f'https://www.tianyancha.com/pagination/stockChangeInfo.xhtml?ps={ps}0&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
+            url = f'https://www.tianyancha.com/pagination/illegalRemove.xhtml?ps={ps}&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=self.get_headers) as resp:
                     response = await resp.text() if await resp.text() else '<div></div>'
-                    trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=response)
+                    trs = self.get_xpath('//table[@class="table -breakall"]/tbody/tr', response=response)
                     if trs:
                         await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id) for tr in trs])
                     else:
                         print('数据为空')
         except Exception as e:
-            print(f'类 - - {HolderChange.__name__} - - 异步请求出错：', e)
+            print(f'类 - - {IllegalRemove.__name__} - - 异步请求出错：', e)
 
 
 if __name__ == '__main__':

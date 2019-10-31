@@ -32,13 +32,17 @@ class JudicialAssistance(BaseSpider):
             key = list(data.keys())[0]
             kwargs = get_different_roules(data.get(key), key)
             kwargs.update({'company_name': company_name, 'company_id': company_id})
-            print(kwargs)
-            # tup = ('punish_type', 'punish_explain', 'default_type', 'announcement_date', 'punish_object', 'disposer',
-            #        'illegal_act', 'company_name', 'company_id')
-            # values, keys = self.structure_sql_statement(tup, kwargs)
-            # sql = f'insert into das_tm_illegal_processing {keys} value {values};'
-            # print(sql)
-            # self.operating.save_mysql(sql)
+
+            tup = ('licenseNum', 'assigneeLicenseNum', 'assigneeCid', 'executionDate', 'assigneeLicenseType', 'assignee',
+                   'assigneeType', 'assId', 'frozenRemoveDate', 'toDate', 'executeOrderNum', 'equityAmountOther',
+                   'period', 'implementationMatters', 'executiveCourt', 'fromDate', 'executeNoticeNum',
+                   'executedPersonCid', 'executedPersonType', 'licenseType', 'publicityAate', 'invalidationDate',
+                   'invalidationReason', 'equityAmount', 'executedPerson', 'executedPersonHid', 'typeState',
+                   'company_name', 'company_id')
+            values, keys = self.structure_sql_statement(tup, kwargs)
+            sql = f'insert into das_tm_judicial_assistance_details {keys} value {values};'
+            print(sql)
+            self.operating.save_mysql(sql)
 
     async def parse(self, company_id, company_name, ps=20, pn=1, resp=None):
         """
@@ -68,8 +72,12 @@ class JudicialAssistance(BaseSpider):
             url = f'https://www.tianyancha.com/pagination/judicialAid.xhtml?ps={ps}&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=self.get_headers) as resp:
-                    trs = self.get_xpath('//table[@class="table -sort"]/tbody/tr', response=await resp.text())
-                    await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id, session) for tr in trs])
+                    response = await resp.text() if await resp.text() else '<div></div>'
+                    trs = self.get_xpath('//table[@class="table -sort"]/tbody/tr', response=response)
+                    if trs:
+                        await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id, session) for tr in trs])
+                    else:
+                        print('无数据')
         except Exception as e:
             print(f'类 - - {JudicialAssistance.__name__} - - 异步请求出错：', e)
 

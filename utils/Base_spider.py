@@ -143,7 +143,7 @@ class BaseSpider(object):
         :param resp:
         :return:
         """
-        self.page = self.page_total(total_num, one_page)
+        page = self.page_total(total_num, one_page)
         # spawn_list = []
         # for pn in range(1, self.page + 1):
         #     # 遍历爬取
@@ -151,8 +151,7 @@ class BaseSpider(object):
         #     # 开启携程
         #     spawn_list.append(gevent.spawn(self.parse, company_id, company_name, one_page, pn))
         # gevent.joinall(spawn_list)
-
-        tracks = [self.parse(company_id, company_name, one_page, pn, resp) for pn in range(1, self.page+1)]
+        tracks = [self.parse(company_id, company_name, one_page, pn, resp) for pn in range(1, page+1)]
         await asyncio.gather(*tracks)
 
     def run(self, company_name: str, company_id: str, total_num: int, one_page: int, resp):

@@ -1,12 +1,13 @@
+import json
 import aiohttp
 import asyncio
 
 from utils.Base_spider import BaseSpider
 
 
-class HolderChange(BaseSpider):
+class EquityInfo(BaseSpider):
     """
-    股权变更信息（公司公示）
+    股权出质爬虫
     """
 
     def __init__(self, *args, **kwargs):
@@ -21,31 +22,16 @@ class HolderChange(BaseSpider):
         :param company_id:
         :return:
         """
-        # 股东发起人
-        name = ''.join(self.get_xpath('./td[2]//td[2]//text()', html=tr))
-        # 变更后
-        ratio_after = ''.join(self.get_xpath('./td[4]//text()', html=tr))
-        # 变更前
-        ratio_before = ''.join(self.get_xpath('./td[3]//text()', html=tr))
-        # 变更时间
-        change_time = ''.join(self.get_xpath('./td[5]//text()', html=tr))
-        # logo
-        logo = ''.join(self.get_xpath('./td[2]//td[1]//img/@data-src', html=tr))
+        script = ''.join(self.get_xpath('./td[8]/script//text()', html=tr))
+        kwargs = json.loads(script)
+        kwargs.update(
+            {'company_name': company_name, 'company_id': company_id, 'name': kwargs.get('pledgeeList')[0].get('name'),
+             'pledgee_id': kwargs.get('pledgeeList')[0].get('id')})
 
-        kwargs = {
-            'name': name,
-            'ratio_after': ratio_after,
-            'ratio_before': ratio_before,
-            'change_time': change_time,
-            'logo': logo,
-            'company_name': company_name,
-            'company_id': company_id
-        }
-
-        tup = ('company_name', 'company_id', 'name', 'ratio_after', 'logo', 'ratio_before',
-               'type', 'change_time')
+        tup = ('equityAmount', 'regNumber', 'pledgee', 'putDate', 'pledgee_id', 'name', 'state', 'pledgor',
+               'certifNumberR', 'certifNumber', 'company_name', 'company_id')
         values, keys = self.structure_sql_statement(tup, kwargs)
-        sql = f'insert into das_tm_holder_change_info {keys} value {values};'
+        sql = f'insert into das_tm_equity_info {keys} value {values};'
         print(sql)
         self.operating.save_mysql(sql)
 
@@ -74,17 +60,17 @@ class HolderChange(BaseSpider):
         #     pass
 
         try:
-            url = f'https://www.tianyancha.com/pagination/stockChangeInfo.xhtml?ps={ps}0&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
+            url = f'https://www.tianyancha.com/pagination/equity.xhtml?ps={ps}&pn={pn}&name={company_name}&_={self.get_now_timestamp()}'
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=self.get_headers) as resp:
                     response = await resp.text() if await resp.text() else '<div></div>'
-                    trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=response)
+                    trs = self.get_xpath('//table[@class="table -sort"]/tbody/tr', response=response)
                     if trs:
                         await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id) for tr in trs])
                     else:
                         print('数据为空')
         except Exception as e:
-            print(f'类 - - {HolderChange.__name__} - - 异步请求出错：', e)
+            print(f'类 - - {EquityInfo.__name__} - - 异步请求出错：', e)
 
 
 if __name__ == '__main__':

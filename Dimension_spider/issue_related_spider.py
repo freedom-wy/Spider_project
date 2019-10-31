@@ -39,7 +39,7 @@ class IssueRelated(BaseSpider):
         # 继承父类的方法
         super().__init__(*args, **kwargs)
 
-    def detail_one_parse(self, **kwargs):
+    async def detail_one_parse(self, **kwargs):
         """
         单独解析一个tr
         :return:

@@ -25,6 +25,17 @@ from Dimension_spider.send_announcement_spider import SendAnnouncement
 from Dimension_spider.court_register_spider import CourtRegister
 from Dimension_spider.illegal_processing_spider import IllegalProcessing
 from Dimension_spider.judicial_assistance_spider import JudicialAssistance
+from Dimension_spider.abnormal_info_spider import AbnormmalInfo
+from Dimension_spider.illegal_remove_spider import IllegalRemove
+from Dimension_spider.illegal_put_spider import IllegalPut
+from Dimension_spider.puni_shment_spider import PuniShment
+from Dimension_spider.credit_china_spider import CreditChina
+from Dimension_spider.environmental_penalty_spider import EnvironmentalPenalty
+from Dimension_spider.mortgage_info_spider import MortgageInfo
+from Dimension_spider.equity_info_spider import EquityInfo
+from Dimension_spider.land_mortgage_spider import LandMortgage
+from Dimension_spider.intellectual_property_spider import IntellectualProperty
+
 
 # 配置文件
 
@@ -83,6 +94,26 @@ court = CourtRegister()
 illegal = IllegalProcessing()
 # 司法协助爬虫
 judicial = JudicialAssistance()
+# 经营异常爬虫
+abnormal = AbnormmalInfo()
+# 严重违法（移出）
+remove = IllegalRemove()
+# 严重违法（列入）
+put = IllegalPut()
+# 行政处罚（工商局）
+punishment = PuniShment()
+# 行政处罚（信用中国）
+credit = CreditChina()
+# 环保处罚爬虫
+environmental = EnvironmentalPenalty()
+# 动产抵押爬虫
+mortgage = MortgageInfo()
+# 股权出质爬虫
+equity = EquityInfo()
+# 土地抵押爬虫
+land = LandMortgage()
+# 知识产权出质爬虫
+intellectual = IntellectualProperty()
 
 # 维度列表
 CLASS_LIST = [
@@ -137,9 +168,29 @@ CLASS_LIST = [
     # 立案信息爬虫
     # '_container_courtRegister',
     # 违规处理爬虫
-    # '_container_corpIllegals'
+    # '_container_corpIllegals',
     # 司法协助爬虫
-    '_container_judicialAid'
+    # '_container_judicialAid',
+    # 经营异常爬虫
+    # '_container_abnormalRemove',
+    # 严重违法爬虫（移出）
+    # '_container_illegalRemove',
+    # 严重违法爬虫（列入）
+    # '_container_illegalPut',
+    # 行政处罚爬虫（工商局）
+    # '_container_punish',
+    # 行政处罚爬虫（信用中国）
+    # '_container_punishmentCreditchina',
+    # 环保处罚爬虫
+    # '_container_environmentalPenalties',
+    # 动产抵押爬虫
+    # '_container_mortgage',
+    # 股权出质爬虫
+    # '_container_equity',
+    # 土地抵押爬虫
+    # '_container_landMortgages',
+    # 知识产权出质爬虫
+    '_container_intellectualProperty',
 
 ]
 
@@ -183,7 +234,7 @@ CLASS_INFO_DICT = {
         'nav-main-stockNum': {
             'func': company,
             'total_num': None,
-            'one_page': 20,
+            'one_page': 10,
             'total_num_xpath': '//div[@id="nav-main-stockNum"]//ul[@class="pagination"]/@page-total',
             'response': None
         },
@@ -361,6 +412,86 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_judicialAid"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 经营异常爬虫
+        '_container_abnormalRemove': {
+            'func': abnormal,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_abnormalRemove"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 严重违法爬虫（移出）
+        '_container_illegalRemove': {
+            'func': remove,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_illegalRemove"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 严重违法爬虫（列入）
+        '_container_illegalPut': {
+            'func': put,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_illegalPut"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 行政处罚爬虫（工商局）
+        '_container_punish': {
+            'func': punishment,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_punish"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 行政处罚爬虫（信用中国）
+        '_container_punishmentCreditchina': {
+            'func': credit,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_punishmentCreditchina"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 环保处罚爬虫
+        '_container_environmentalPenalties': {
+            'func': environmental,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_environmentalPenalties"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 动产抵押爬虫
+        '_container_mortgage': {
+            'func': mortgage,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_mortgage"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 股权出质爬虫
+        '_container_equity': {
+            'func': equity,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_equity"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 土地抵押爬虫
+        '_container_landMortgages': {
+            'func': land,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_landMortgages"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 知识产权出质爬虫
+        '_container_intellectualProperty': {
+            'func': intellectual,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_intellectualProperty"]//ul[@class="pagination"]/@page-total',
             'response': None
         },
 

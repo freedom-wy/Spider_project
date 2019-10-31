@@ -14,7 +14,7 @@ class IllegalProcessing(BaseSpider):
         # 继承父类的方法
         super().__init__(*args, **kwargs)
 
-    def detail_one_parse(self, tr, company_name, company_id):
+    async def detail_one_parse(self, tr, company_name, company_id):
         """
         单独解析一个tr
         :param tr:
@@ -61,8 +61,12 @@ class IllegalProcessing(BaseSpider):
             url = f'https://www.tianyancha.com/pagination/corpIllegals.xhtml?ps={ps}&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=self.get_headers) as resp:
-                    trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=await resp.text())
-                    await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id) for tr in trs])
+                    response = await resp.text() if await resp.text() else '<div></div>'
+                    trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=response)
+                    if trs:
+                        await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id) for tr in trs])
+                    else:
+                        print('无数据')
         except Exception as e:
             print(f'类 - - {IllegalProcessing.__name__} - - 异步请求出错：', e)
 

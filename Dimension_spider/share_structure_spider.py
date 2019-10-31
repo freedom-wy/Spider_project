@@ -12,7 +12,7 @@ class ShareStructure(BaseSpider):
         # 继承父类的方法
         super().__init__(*args, **kwargs)
 
-    def detail_one_parse(self, tr, company_name, company_id, year):
+    async def detail_one_parse(self, tr, company_name, company_id, year):
         """
         单独解析一个tr
         :param tr:
@@ -90,10 +90,15 @@ class ShareStructure(BaseSpider):
                 for index, year in enumerate(years):
                     url = f'https://www.tianyancha.com/stock/shareStructure.xhtml?graphId={company_id}&index={index}&time={year}&_={self.get_now_timestamp()}'
                     async with session.get(url, headers=self.get_headers) as resp:
-                        trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=await resp.text())
-                        await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id, year) for tr in trs])
+                        response = await resp.text() if await resp.text() else '<div></div>'
+                        trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=response)
+                        if trs:
+                            await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id, year) for tr in trs])
+                        else:
+                            print('无数据')
         except Exception as e:
             print(f'类 - - {ShareStructure.__name__} - - 异步请求出错：', e)
+
 
 if __name__ == '__main__':
     pass
