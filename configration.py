@@ -35,6 +35,12 @@ from Dimension_spider.mortgage_info_spider import MortgageInfo
 from Dimension_spider.equity_info_spider import EquityInfo
 from Dimension_spider.land_mortgage_spider import LandMortgage
 from Dimension_spider.intellectual_property_spider import IntellectualProperty
+from Dimension_spider.taxation_offences_details_spider import TaxationOffences
+from Dimension_spider.own_tax_spider import OwnTax
+from Dimension_spider.judicial_sale_spider import JudicialSale
+from Dimension_spider.public_notice_spider import PublicNotice
+from Dimension_spider.liquidating_info_spider import LiquidatingInfo
+from Dimension_spider.brief_cancel_spider import BriefCancel
 
 
 # 配置文件
@@ -114,6 +120,18 @@ equity = EquityInfo()
 land = LandMortgage()
 # 知识产权出质爬虫
 intellectual = IntellectualProperty()
+# 税收违法详情爬虫
+taxation = TaxationOffences()
+# 欠税公告爬虫
+own = OwnTax()
+# 司法拍卖爬虫
+sale = JudicialSale()
+# 公示催告爬虫
+notice = PublicNotice()
+# 清算信息爬虫
+liquidate = LiquidatingInfo()
+# 简易注销爬虫
+brief = BriefCancel()
 
 # 维度列表
 CLASS_LIST = [
@@ -190,7 +208,19 @@ CLASS_LIST = [
     # 土地抵押爬虫
     # '_container_landMortgages',
     # 知识产权出质爬虫
-    '_container_intellectualProperty',
+    # '_container_intellectualProperty',
+    # 税收违法详情爬虫
+    # '_container_taxContraventions',
+    # 欠税公告爬虫
+    # '_container_towntax',
+    # 司法拍卖爬虫
+    # '_container_judicialSale',
+    # 公示催告爬虫
+    # '_container_publicnoticeItem',
+    #  清算信息爬虫
+    # '_container_clearingCount',
+    # 简易注销爬虫
+    '_container_briefCancelAnnouncements'
 
 ]
 
@@ -492,6 +522,54 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_intellectualProperty"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 税收违法爬虫
+        '_container_taxContraventions': {
+            'func': taxation,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_taxContraventions"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 欠税公告爬虫
+        '_container_towntax': {
+            'func': own,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_towntax"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 司法拍卖爬虫
+        '_container_judicialSale': {
+            'func': sale,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_judicialSale"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 公示催告爬虫
+        '_container_publicnoticeItem': {
+            'func': notice,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_publicnoticeItem"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 清算信息爬虫
+        '_container_clearingCount': {
+            'func': liquidate,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_clearingCount"]//ul[@class="pagination"]/@page-total',
+            'response': None
+        },
+        # 简易注销爬虫
+        '_container_briefCancelAnnouncements': {
+            'func': brief,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_briefCancelAnnouncements"]//ul[@class="pagination"]/@page-total',
             'response': None
         },
 

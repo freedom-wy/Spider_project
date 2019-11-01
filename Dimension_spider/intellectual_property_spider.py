@@ -28,26 +28,32 @@ class IntellectualProperty(BaseSpider):
         # 种类
         iprType = ''.join(self.get_xpath('./td[4]//text()', html=tr))
         # 出质人名称
-        pledgorName = ''.join(self.get_xpath('./td[5]//text()', html=tr))
+        pledgorName = '-'.join(self.get_xpath('./td[5]//text()', html=tr))
         # 质权人名称
-        pledgeeName = ''.join(self.get_xpath('./td[5]//text()', html=tr))
+        pledgeeName = '-'.join(self.get_xpath('./td[6]//text()', html=tr))
         # 职权登记期限
-        pledgeRegPeriod = ''.join(self.get_xpath('./td[5]//text()', html=tr))
+        pledgeRegPeriod = ''.join(self.get_xpath('./td[7]//text()', html=tr))
         # 状态
-        state = ''.join(self.get_xpath('./td[5]//text()', html=tr))
+        state = ''.join(self.get_xpath('./td[8]//text()', html=tr))
         # 公示日期
-        # 操作
+        pubDate = ''.join(self.get_xpath('./td[9]//text()', html=tr))
 
         kwargs = {
-            'changeTime': changeTime,
-            'changeItem': changeItem,
-            'contentBefore': contentBefore,
-            'contentAfter': contentAfter,
+            'iprCertificateNum': iprCertificateNum,
+            'iprName': iprName,
+            'iprType': iprType,
+            'pledgorName': pledgorName,
+            'pledgeeName': pledgeeName,
+            'pledgeRegPeriod': pledgeRegPeriod,
+            'state': state,
+            'pubDate': pubDate,
             'company_name': company_name,
             'company_id': company_id
         }
 
-        tup = ('changeItem', 'createTime', 'contentBefore', 'contentAfter', 'changeTime', 'company_name', 'company_id')
+        tup = ('pledgeeName', 'pledgeRegPeriod', 'pledgeeType', 'iprType', 'pledgeId', 'pledgorType',
+               'iprCertificateNum', 'state', 'detailList', 'pledgorName', 'pledgeeCid', 'iprName', 'pledgorCid',
+               'company_name', 'company_id', 'pubDate')
         values, keys = self.structure_sql_statement(tup, kwargs)
         sql = f'insert into das_tm_intellectual_property {keys} value {values};'
         print(sql)
