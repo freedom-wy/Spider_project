@@ -26,7 +26,8 @@ class CourtRegister(BaseSpider):
         script = ''.join(self.get_xpath('./td[7]/script//text()', html=tr))
         kwargs = json.loads(script)
         kwargs.update({'company_name': company_name, 'company_id': company_id})
-        name = ''.join(re.findall(r'<a href = "https://www.tianyancha.com/company/\d+" target = "_blank">(.*?)</a>', kwargs.get('defendant')))
+        name = ''.join(re.findall(r'<a href = "https://www.tianyancha.com/company/\d+" target = "_blank">(.*?)</a>',
+                                  kwargs.get('defendant')))
         kwargs['defendant'] = name if name else kwargs.get('defendant')
 
         tup = ('litigant', 'filingDate', 'litigantGids', 'caseStatus', 'source', 'content', 'caseType', 'sourceUrl',

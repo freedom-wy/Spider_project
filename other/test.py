@@ -11,6 +11,7 @@ import pandas as pd
 import re
 import asyncio
 import aiohttp
+from utils.get_cookies import get_cookies
 #
 # import random
 #
@@ -152,9 +153,10 @@ if __name__ == '__main__':
     # spider2 = SpiderInfo('https://www.zhaoshang.net/yuanqu/list/')
     # spider2.run()
     # asyncio.run(spider.run())
-    a = Person('p1', 20)
+    # a = Person('p1', 20)
     # print(a.cs)
-    a.cs = 'a'
-    print(a.cs)
-    end_time = time.time()
-    print(f'运行时间 - - :', end_time - start_time)
+    # a.cs = 'a'
+    # print(a.cs)
+    # end_time = time.time()
+    # print(f'运行时间 - - :', end_time - start_time)
+    print(get_cookies())

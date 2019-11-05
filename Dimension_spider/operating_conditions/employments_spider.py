@@ -4,9 +4,9 @@ import aiohttp
 from utils.Base_spider import BaseSpider
 
 
-class BidsInfo(BaseSpider):
+class Employments(BaseSpider):
     """
-    招投标爬虫
+    招聘信息爬虫
     """
 
     def __init__(self, *args, **kwargs):
@@ -22,27 +22,36 @@ class BidsInfo(BaseSpider):
         :return:
         """
         # 发布日期
-        publish_time = ''.join(self.get_xpath('./td[2]//text()', html=tr))
-        # 标题
+        startdate = ''.join(self.get_xpath('./td[2]//text()', html=tr))
+        # 招聘职位
         title = ''.join(self.get_xpath('./td[3]//text()', html=tr))
-        # 采购人
-        purchaser = ''.join(self.get_xpath('./td[4]//text()', html=tr))
-        # uuid
-        uuid = ''.join(self.get_xpath('./td[3]/a/@href', html=tr)).split('/')[-1]
+        # 月薪
+        oriSalary = ''.join(self.get_xpath('./td[4]//text()', html=tr))
+        # 学历
+        education = ''.join(self.get_xpath('./td[5]//text()', html=tr))
+        # 工作经验
+        experience = ''.join(self.get_xpath('./td[6]//text()', html=tr))
+        # 地区
+        city = ''.join(self.get_xpath('./td[7]//text()', html=tr))
+        # url
+        webInfoPath = ''.join(self.get_xpath('./td[8]/a/@href', html=tr))
 
         kwargs = {
-            'publish_time': publish_time,
+            'startdate': startdate,
             'title': title,
-            'purchaser': purchaser,
-            'uuid': uuid,
+            'oriSalary': oriSalary,
+            'education': education,
+            'experience': experience,
+            'city': city,
+            'webInfoPath': webInfoPath,
             'company_name': company_name,
             'company_id': company_id
         }
 
-        tup = ('purchaser', 'publish_time', 'link', 'bid_url', 'intro', 'content', 'title', 'abs', 'proxy',
-               'company_name', 'company_id', 'uuid')
+        tup = ('education', 'city', 'webInfoPath', 'source', 'title', 'experience', 'startdate', 'welfare',
+               'oriSalary', 'company_name', 'company_id')
         values, keys = self.structure_sql_statement(tup, kwargs)
-        sql = f'insert into das_tm_bids_info {keys} value {values};'
+        sql = f'insert into das_tm_employments_info {keys} value {values};'
         print(sql)
         self.operating.save_mysql(sql)
 
@@ -56,22 +65,8 @@ class BidsInfo(BaseSpider):
         :param resp:
         :return:
         """
-        # resp = self.download(
-        #     f'https://www.tianyancha.com/pagination/bid.xhtml?ps={ps}&pn={pn}&id={company_id}&_={self.get_now_timestamp()}')
-        # # 获取所有的trs
-        # try:
-        #     trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=resp.text)
-        #     # 详情解析
-        #     # self.detail_parse(trs, company_name)
-        #     # 对一个tr进行解析
-        #     for tr in trs:
-        #         self.detail_one_parse(tr, company_name, company_id)
-        #
-        # except Exception as e:
-        #     pass
-
         try:
-            url = f'https://www.tianyancha.com/pagination/bid.xhtml?ps={ps}&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
+            url = f'https://www.tianyancha.com/pagination/baipin.xhtml?ps={ps}&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=self.get_headers) as resp:
                     response = await resp.text() if await resp.text() else '<div></div>'
@@ -82,7 +77,7 @@ class BidsInfo(BaseSpider):
                         print('无数据')
 
         except Exception as e:
-            print(f'类 - - {BidsInfo.__name__} - - 异步请求出错：', e)
+            print(f'类 - - {Employments.__name__} - - 异步请求出错：', e)
 
 
 if __name__ == '__main__':

@@ -26,7 +26,7 @@ class MortgageInfo(BaseSpider):
         """
         info = ''.join(self.get_xpath('./td[8]/span/@onclick', html=tr))
         zid = ''.join(re.findall(r'openMortgageInfoDetail\("(.*?)"\)', info))
-        url = f'https://capi.tianyancha.com/cloud-operating-risk/operating/chattelMortgage/getMortgageDetail?businessId={zid}'
+        url = f'https://capi.tianyancha.com/cloud-operating-risk/operating/chattelMortgage/getMortgageDetail?businessId={zid}&_={self.get_now_timestamp()}'
         async with session.get(url, headers=self.set_x_auth_token) as resp:
             data = await resp.json()
             data_list = data.get('data').get('pawnInfoList')
@@ -43,7 +43,7 @@ class MortgageInfo(BaseSpider):
             print(sql)
             self.operating.save_mysql(sql)
             tup2 = (
-            'remark', 'detail', 'type', 'pawnName', 'gid', 'ownership', 'company_id', 'company_name', 'foreign_id')
+                'remark', 'detail', 'type', 'pawnName', 'gid', 'ownership', 'company_id', 'company_name', 'foreign_id')
             for dt in data_list:
                 dt.update({'company_id': company_id, 'company_name': company_name, 'foreign_id': gid})
                 values, keys = self.structure_sql_statement(tup2, dt)

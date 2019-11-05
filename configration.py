@@ -41,6 +41,17 @@ from Dimension_spider.business_risk.judicial_sale_spider import JudicialSale
 from Dimension_spider.business_risk.public_notice_spider import PublicNotice
 from Dimension_spider.business_risk.liquidating_info_spider import LiquidatingInfo
 from Dimension_spider.business_risk.brief_cancel_spider import BriefCancel
+from Dimension_spider.operating_conditions.administration_license_spider import AdministrationLicense
+from Dimension_spider.operating_conditions.administration_license_china_spider import AdministrationLicenseChina
+from Dimension_spider.operating_conditions.tax_credit_spider import TaxCredit
+from Dimension_spider.operating_conditions.employments_spider import Employments
+from Dimension_spider.operating_conditions.spot_check_spider import SpotCheck
+from Dimension_spider.operating_conditions.import_and_export_spider import ImportAndExport
+from Dimension_spider.operating_conditions.certificate_spider import Certificate
+from Dimension_spider.operating_conditions.purchase_land_spider import PurchaseLand
+from Dimension_spider.operating_conditions.land_publicity_spider import LandPublicity
+from Dimension_spider.operating_conditions.land_transfer_spider import LandTransfer
+from Dimension_spider.operating_conditions.bond_details_spider import BondDetails
 
 
 # 配置文件
@@ -132,6 +143,28 @@ notice = PublicNotice()
 liquidate = LiquidatingInfo()
 # 简易注销爬虫
 brief = BriefCancel()
+# 行政许可（工商局）爬虫
+admin = AdministrationLicense()
+# 行政许可（信用中国）爬虫
+admin_china = AdministrationLicenseChina()
+# 税务评级爬虫
+tax = TaxCredit()
+# 招聘信息爬虫
+employ = Employments()
+# 抽查检查爬虫
+spot = SpotCheck()
+# 进出口信用爬虫
+export = ImportAndExport()
+# 资质证书爬虫
+certificate = Certificate()
+# 购地信息爬虫
+purchase = PurchaseLand()
+# 地块公示爬虫
+land_publicity = LandPublicity()
+# 土地转让爬虫
+transfer = LandTransfer()
+# 证券信息爬虫
+bond = BondDetails()
 
 # 维度列表
 CLASS_LIST = [
@@ -220,7 +253,29 @@ CLASS_LIST = [
     #  清算信息爬虫
     # '_container_clearingCount',
     # 简易注销爬虫
-    '_container_briefCancelAnnouncements'
+    # '_container_briefCancelAnnouncements'
+    # 行政许可（工商局）爬虫
+    # '_container_licensing',
+    # 行政许可（信用中国）爬虫
+    # '_container_licensingXyzg',
+    # 税务评级爬虫
+    # '_container_taxcredit',
+    # 招聘信息爬虫
+    # '_container_baipin',
+    # 抽查检查爬虫
+    # '_container_check',
+    # 进出口信用爬虫
+    # '_container_importAndExport',
+    # 资质证书爬虫
+    # '_container_certificate',
+    # 购地信息爬虫
+    # '_container_purchaselandV2',
+    # 地块公示爬虫
+    # '_container_landPublicitys',
+    # 土地转让爬虫
+    # '_container_landTransfers',
+    # 证券信息爬虫
+    '_container_bond',
 
 ]
 
@@ -235,6 +290,7 @@ CLASS_INFO_DICT = {
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_staff"]//ul[@class="pagination"]/@page-total',
             'response': None,
+            'status': 'async',
         },
         # 对外投资
         '_container_invest': {
@@ -242,7 +298,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_invest"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 股东信息
         '_container_holder': {
@@ -250,7 +307,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_holder"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 股票行情
         '_container_volatilityNum': {
@@ -258,7 +316,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_volatilityNum"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 公司简介
         'nav-main-stockNum': {
@@ -266,7 +325,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="nav-main-stockNum"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 证券信息爬虫
         '_container_secBasicInfo': {
@@ -274,7 +334,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_secBasicInfo"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 主要指标爬虫
         '_container_corpMainIndex': {
@@ -282,7 +343,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_corpMainIndex"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 重要人员爬虫
         '_container_corpBasicInfo': {
@@ -290,7 +352,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_corpBasicInfo"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 联系信息爬虫
         '_container_corpContactInfo': {
@@ -298,7 +361,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_corpBasicInfo"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 高管信息爬虫
         '_container_seniorPeople': {
@@ -306,7 +370,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_seniorPeople"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 十大股东爬虫
         '_container_topTenNum': {
@@ -314,7 +379,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_topTenNum"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 发行相关爬虫
         'nav-main-issueRelatedNum': {
@@ -322,7 +388,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_topTenNum"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 股本结构爬虫
         '_container_shareStructure': {
@@ -330,7 +397,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_shareStructure"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 股本结构爬虫
         '_container_bid': {
@@ -338,7 +406,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_bid"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 上市公告爬虫
         '_container_announcement': {
@@ -346,7 +415,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_announcement"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 最终受益人爬虫
         '_container_humanholding': {
@@ -354,7 +424,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 20,
             'total_num_xpath': '//div[@id="_container_humanholding"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 分支机构爬虫
         '_container_branch': {
@@ -362,7 +433,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_branch"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 变更记录爬虫爬虫
         '_container_changeinfo': {
@@ -370,7 +442,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_changeinfo"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 股东及出资信息爬虫（公司公示）
         '_container_holderList': {
@@ -378,7 +451,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_holderList"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 股权变更信息爬虫（公司公示）
         '_container_stockChangeInfo': {
@@ -386,7 +460,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_stockChangeInfo"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 开庭公告爬虫
         '_container_announcementcourt': {
@@ -394,7 +469,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_announcementcourt"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 法律诉讼爬虫
         '_container_lawsuit': {
@@ -402,7 +478,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_lawsuit"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 被执行人爬虫
         '_container_zhixing': {
@@ -410,7 +487,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_zhixing"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 送达公告爬虫
         '_container_sendAnnouncements': {
@@ -418,7 +496,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_sendAnnouncements"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 立案信息爬虫
         '_container_courtRegister': {
@@ -426,7 +505,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_courtRegister"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 违规处理爬虫
         '_container_corpIllegals': {
@@ -434,7 +514,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_corpIllegals"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 司法协助爬虫
         '_container_judicialAid': {
@@ -442,7 +523,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_judicialAid"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 经营异常爬虫
         '_container_abnormalRemove': {
@@ -450,7 +532,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_abnormalRemove"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 严重违法爬虫（移出）
         '_container_illegalRemove': {
@@ -458,7 +541,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_illegalRemove"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 严重违法爬虫（列入）
         '_container_illegalPut': {
@@ -466,7 +550,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_illegalPut"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 行政处罚爬虫（工商局）
         '_container_punish': {
@@ -474,7 +559,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_punish"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 行政处罚爬虫（信用中国）
         '_container_punishmentCreditchina': {
@@ -482,7 +568,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_punishmentCreditchina"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 环保处罚爬虫
         '_container_environmentalPenalties': {
@@ -490,7 +577,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_environmentalPenalties"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 动产抵押爬虫
         '_container_mortgage': {
@@ -498,7 +586,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_mortgage"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 股权出质爬虫
         '_container_equity': {
@@ -506,7 +595,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_equity"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 土地抵押爬虫
         '_container_landMortgages': {
@@ -514,7 +604,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_landMortgages"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 知识产权出质爬虫
         '_container_intellectualProperty': {
@@ -522,7 +613,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_intellectualProperty"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 税收违法爬虫
         '_container_taxContraventions': {
@@ -530,7 +622,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_taxContraventions"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 欠税公告爬虫
         '_container_towntax': {
@@ -538,7 +631,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_towntax"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 司法拍卖爬虫
         '_container_judicialSale': {
@@ -546,7 +640,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_judicialSale"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 公示催告爬虫
         '_container_publicnoticeItem': {
@@ -554,7 +649,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_publicnoticeItem"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 清算信息爬虫
         '_container_clearingCount': {
@@ -562,7 +658,8 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_clearingCount"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
         # 简易注销爬虫
         '_container_briefCancelAnnouncements': {
@@ -570,8 +667,109 @@ CLASS_INFO_DICT = {
             'total_num': None,
             'one_page': 10,
             'total_num_xpath': '//div[@id="_container_briefCancelAnnouncements"]//ul[@class="pagination"]/@page-total',
-            'response': None
+            'response': None,
+            'status': 'async',
         },
+        # 行政许可（工商信息）爬虫
+        '_container_licensing': {
+            'func': admin,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_licensing"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 行政许可（信用中国）爬虫
+        '_container_licensingXyzg': {
+            'func': admin_china,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_licensingXyzg"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 税务评级爬虫
+        '_container_taxcredit': {
+            'func': tax,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_taxcredit"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 招聘信息爬虫
+        '_container_baipin': {
+            'func': employ,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_baipin"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 抽查检查爬虫
+        '_container_check': {
+            'func': spot,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_check"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 进出口信用爬虫
+        '_container_importAndExport': {
+            'func': export,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_importAndExport"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 资质证书爬虫
+        '_container_certificate': {
+            'func': certificate,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_certificate"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 购地信息爬虫
+        '_container_purchaselandV2': {
+            'func': purchase,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_purchaselandV2"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 地块公示爬虫
+        '_container_landPublicitys': {
+            'func': land_publicity,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_landPublicitys"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+        # 土地转让爬虫
+        '_container_landTransfers': {
+            'func': transfer,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_landTransfers"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'coroutine',
+        },
+        # 债券信息爬虫
+        '_container_bond': {
+            'func': bond,
+            'total_num': None,
+            'one_page': 10,
+            'total_num_xpath': '//div[@id="_container_bond"]//ul[@class="pagination"]/@page-total',
+            'response': None,
+            'status': 'async',
+        },
+
 
     }
 }
