@@ -1,8 +1,11 @@
 # Base爬虫
+# from gevent import monkey
+# monkey.patch_all()
+import gevent
+
 import math
 from datetime import datetime
 
-import gevent
 import asyncio
 import aiohttp
 import requests
@@ -36,13 +39,14 @@ class BaseSpider(object):
             'version': 'TYC-Web',
             'X-AUTH-TOKEN': ''
         }
-
-        one_cookies = self.get_headers.get('Cookie').split(';')
+        headers = self.get_headers
+        one_cookies = headers.get('Cookie').split(';')
         cookies_tup = [k.split('=') for k in one_cookies]
         for token in cookies_tup:
             if token[0] == 'auth_token':
                 cookies['X-AUTH-TOKEN'] = token[1]
                 break
+        cookies.update(headers)
         return cookies
 
     @property
@@ -144,18 +148,20 @@ class BaseSpider(object):
         :return:
         """
         page = self.page_total(total_num, one_page)
-        # spawn_list = []
-        # for pn in range(1, self.page + 1):
-        #     # 遍历爬取
-        #     # self.parse(company_id, company_name, ps=20, pn=pn)
-        #     # 开启携程
-        #     spawn_list.append(gevent.spawn(self.parse, company_id, company_name, one_page, pn))
-        # gevent.joinall(spawn_list)
-        tracks = [self.parse(company_id, company_name, one_page, pn, resp) for pn in range(1, page+1)]
+        tracks = [self.parse(company_id, company_name, one_page, pn, resp) for pn in range(1, page + 1)]
         await asyncio.gather(*tracks)
 
-    def run(self, company_name: str, company_id: str, total_num: int, one_page: int, resp):
-        asyncio.run(self.main(company_name, company_id, total_num, one_page, resp))
+    def run(self, company_name: str, company_id: str, total_num: int, one_page: int, resp, status):
+        if status == 'async':
+            asyncio.run(self.main(company_name, company_id, total_num, one_page, resp))
+        elif status == 'coroutine':
+            page = self.page_total(total_num, one_page)
+            spawn_list = []
+            for pn in range(1, page + 1):
+                # 开启携程
+                spawn_list.append(gevent.spawn(self.parse, company_id, company_name, one_page, pn, resp))
+
+            gevent.joinall(spawn_list)
 
 
 if __name__ == '__main__':

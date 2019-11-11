@@ -1,3 +1,5 @@
+import json
+
 import re
 import aiohttp
 import asyncio
@@ -5,9 +7,9 @@ import asyncio
 from utils.Base_spider import BaseSpider
 
 
-class TaxationOffences(BaseSpider):
+class Certificate(BaseSpider):
     """
-    税收违法详情爬虫
+    资质证书爬虫
     """
 
     def __init__(self, *args, **kwargs):
@@ -23,21 +25,30 @@ class TaxationOffences(BaseSpider):
         :param session:
         :return:
         """
-        info = ''.join(self.get_xpath('./td[5]/span/@onclick', html=tr))
-        zid = ''.join(re.findall(r'openTaxContraventionDetail\("(.*?)"\)', info))
-        url = f'https://www.tianyancha.com/company/getTaxContraventionDetail.json?id={zid}&_={self.get_now_timestamp()}'
+        kwargs = {'company_name': company_name, 'company_id': company_id}
+        # 发证日期
+        startDate = ''.join(self.get_xpath('./td[2]//text()', html=tr))
+        # 证书类型
+        certificateName = ''.join(self.get_xpath('./td[3]//text()', html=tr))
+        # 证书编号
+        certNo = ''.join(self.get_xpath('./td[4]//text()', html=tr))
+        # 截止日期
+        endDate = ''.join(self.get_xpath('./td[5]//text()', html=tr))
+        kwargs.update({
+            'startDate': startDate,
+            'certificateName': certificateName,
+            'certNo': certNo,
+            'endDate': endDate,
+        })
+        info = ''.join(self.get_xpath('./td[6]/a/@onclick', html=tr))
+        zid = ''.join(re.findall(r"certificatePopup\('(.*?)'\)", info, re.S))
+        url = f'https://www.tianyancha.com/company/certificateDetail.json?id={zid}&_={self.get_now_timestamp()}'
         async with session.get(url, headers=self.set_x_auth_token) as resp:
             data = await resp.json()
-            kwargs = {'company_name': company_name, 'company_id': company_id}
-            kwargs.update(data.get('data'))
-            tup = ('res_person_id_type', 'res_person_sex', 'abnormal_id', 'address', 'responsible_department',
-                   'res_department_name', 'taxpayer_code', 'case_info', 'legal_person_sex', 'case_type',
-                   'legal_person_id_number', 'res_person_name', 'res_department_sex', 'taxpayer_name',
-                   'legal_person_id_type', 'publish_time', 'legal_person_name', 'res_person_id_number',
-                   'taxpayer_number', 'department', 'res_department_id_type', 'res_department_id_number', 'company_name',
-                   'company_id')
+            kwargs.update({'detail': json.dumps(data.get('data').get('detail'))})
+            tup = ('certNo', 'certificateName', 'startDate', 'endDate', 'detail', 'company_name', 'company_id')
             values, keys = self.structure_sql_statement(tup, kwargs)
-            sql = f'insert into das_tm_taxation_offences_detail {keys} value {values};'
+            sql = f'insert into das_tm_certificate_info {keys} value {values};'
             print(sql)
             self.operating.save_mysql(sql)
 
@@ -52,18 +63,18 @@ class TaxationOffences(BaseSpider):
         :return:
         """
         try:
-            url = f'https://www.tianyancha.com/pagination/taxContraventions.xhtml?ps={ps}&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
+            url = f'https://www.tianyancha.com/pagination/certificate.xhtml?ps={ps}&pn={pn}&id={company_id}&_={self.get_now_timestamp()}'
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=self.get_headers) as resp:
                     response = await resp.text() if await resp.text() else '<div></div>'
-                    trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=response)
+                    trs = self.get_xpath('//table[@class="table -breakall"]/tbody/tr', response=response)
                     if trs:
                         await asyncio.gather(
                             *[self.detail_one_parse(tr, company_name, company_id, session) for tr in trs])
                     else:
                         print('数据为空')
         except Exception as e:
-            print(f'类 - - {TaxationOffences.__name__} - - 异步请求出错：', e)
+            print(f'类 - - {Certificate.__name__} - - 异步请求出错：', e)
 
 
 if __name__ == '__main__':

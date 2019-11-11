@@ -25,7 +25,7 @@ class ExecutorInfo(BaseSpider):
         """
         info = ''.join(self.get_xpath('./td[6]/span/@onclick', html=tr))
         zid = ''.join(re.findall(r'openZhixingDetail\("(.*?)"\)', info))
-        url = f'https://capi.tianyancha.com/cloud-newdim/company/getZhixingDetail.json?zid={zid}'
+        url = f'https://capi.tianyancha.com/cloud-newdim/company/getZhixingDetail.json?zid={zid}&_={self.get_now_timestamp()}'
         async with session.get(url, headers=self.set_x_auth_token) as resp:
             data = await resp.json()
             kwargs = data.get('data')
@@ -69,7 +69,8 @@ class ExecutorInfo(BaseSpider):
                     response = await resp.text() if await resp.text() else '<div></div>'
                     trs = self.get_xpath('//table[@class="table"]/tbody/tr', response=response)
                     if trs:
-                        await asyncio.gather(*[self.detail_one_parse(tr, company_name, company_id, session) for tr in trs])
+                        await asyncio.gather(
+                            *[self.detail_one_parse(tr, company_name, company_id, session) for tr in trs])
                     else:
                         print('无数据')
         except Exception as e:

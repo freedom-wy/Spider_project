@@ -1,13 +1,11 @@
 import time
 import random
 from multiprocessing.pool import ThreadPool
-# from multiprocessing import Pool
 
 import requests
 from lxml import etree
 
-from utils.get_cookies import get_cookies, get_vip_cookies
-from utils.Base_spider import BaseSpider
+from utils.get_cookies import get_cookies
 from configration import CLASS_LIST, CLASS_INFO_DICT, USER_AGENT_LIST
 
 
@@ -62,16 +60,19 @@ class Scheduling(object):
         调度解析
         :return:
         """
+        rule_id = '//div[@class="result-list sv-search-container"]/div[1]/div[@class="search-result-single   "]/@data-id'
+        rule_name = '//div[@class="result-list sv-search-container"]/div[1]/div[@class="search-result-single   "]//a[@class="name "]//text()'
+        vip_rule_id = '//div[@class="result-list sv-search-container"]/div[1]/div[@class="search-result-single   -hasown"]/@data-id'
+        vip_rule_name = '//div[@class="result-list sv-search-container"]/div[1]/div[@class="search-result-single   -hasown"]//a[@class="name "]//text()'
         # 获取公司id
         result = self.get_xpath(
-            '//div[@class="search-item sv-search-company"][1]/div[@class="search-result-single   "]/@data-id', response)
+            rule_id + ' | ' + vip_rule_id, response)
         # 获取公司名
         name = self.get_xpath(
-            '//div[@class="search-item sv-search-company"][1]/div[@class="search-result-single   "]//a[@class="name "]//text()',
+            rule_name + ' | ' + vip_rule_name,
             response)
         data_id = result[0] if result else ''
         company_name = name[0] if name else ''
-        # print(company_name, data_id)
         return data_id, company_name
 
     def parse_detail(self, data_id, company_name):
@@ -111,7 +112,7 @@ class Scheduling(object):
         end_time = time.time()
         print('填充时间:', end_time - start_time)
 
-    def run(self, company_name, thread_num=4):
+    def run(self, company_name, thread_num=16):
         """
         总调度模块
         :param company_name: 需要爬取的公司名，全称
@@ -135,9 +136,10 @@ class Scheduling(object):
             one_page = data.get('one_page')
             # 对于没有分页的数据，用详情页爬取
             resp = data.get('response')
+            status = data.get('status')
             print(company_name, company_id, total_num, one_page)
             # 进行线程爬取
-            pool.apply_async(func=func.run, args=(company_name, company_id, int(total_num), one_page, resp))
+            pool.apply_async(func=func.run, args=(company_name, company_id, int(total_num), one_page, resp, status))
 
         pool.close()
         pool.join()

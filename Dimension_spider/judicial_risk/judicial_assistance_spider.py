@@ -26,7 +26,7 @@ class JudicialAssistance(BaseSpider):
         """
         info = ''.join(self.get_xpath('./td[7]/span/@onclick', html=tr))
         zid = ''.join(re.findall(r'openJudicialAidDetail\("(.*?)"\)', info))
-        url = f'https://www.tianyancha.com/company/judicialAidDetail.json?id={zid}'
+        url = f'https://www.tianyancha.com/company/judicialAidDetail.json?id={zid}&_={self.get_now_timestamp()}'
         async with session.get(url, headers=self.set_x_auth_token) as resp:
             data = (await resp.json()).get('data')
             key = list(data.keys())[0]

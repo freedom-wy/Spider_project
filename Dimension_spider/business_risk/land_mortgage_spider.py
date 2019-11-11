@@ -25,7 +25,7 @@ class LandMortgage(BaseSpider):
         """
         info = ''.join(self.get_xpath('./td[7]/span/@onclick', html=tr))
         zid = ''.join(re.findall(r'openLandMortgageDetail\("(.*?)"\)', info))
-        url = f'https://www.tianyancha.com/company/getLandMortgageDetail.json?id={zid}'
+        url = f'https://www.tianyancha.com/company/getLandMortgageDetail.json?id={zid}&_={self.get_now_timestamp()}'
         async with session.get(url, headers=self.set_x_auth_token) as resp:
             data = await resp.json()
             kwargs = {'company_name': company_name, 'company_id': company_id}
