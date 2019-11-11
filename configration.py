@@ -57,6 +57,7 @@ from Dimension_spider.intellectual_property.copy_reg_works_spider import CopyReg
 from Dimension_spider.intellectual_property.website_records_spider import WebsiteRecords
 
 
+
 # 配置文件
 
 # 实例每个爬虫
@@ -175,6 +176,7 @@ works = CopyRegWorks()
 # 网站备案爬虫
 website = WebsiteRecords()
 
+
 # 维度列表
 CLASS_LIST = [
     # 主要人员
@@ -291,6 +293,7 @@ CLASS_LIST = [
     # '_container_copyrightWorks',
     # 网站备案爬虫
     '_container_icp',
+    '_container_bond',
 
 ]
 
@@ -811,8 +814,6 @@ CLASS_INFO_DICT = {
             'response': None,
             'status': 'async',
         },
-
-
     }
 }
 

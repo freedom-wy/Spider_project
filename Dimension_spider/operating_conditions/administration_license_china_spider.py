@@ -23,6 +23,7 @@ class AdministrationLicenseChina(BaseSpider):
         script = ''.join(self.get_xpath('./td[5]/script//text()', html=tr))
         kwargs = json.loads(script)
         kwargs.update({'company_name': company_name, 'company_id': company_id})
+
         tup = ('licenceNumber', 'validityTime', 'dataUpdateTime', 'department', 'licenceContent', 'audiType',
                'endDate', 'decisionDate', 'legalPersonName', 'legalPersonId', 'localCode', 'company_name', 'company_id')
         values, keys = self.structure_sql_statement(tup, kwargs)
